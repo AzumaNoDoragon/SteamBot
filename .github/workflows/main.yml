@@ -2,7 +2,7 @@ name: SteamBot News
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Executa todo dia ao meio-dia UTC
+    - cron: '0 14 * * *'
   workflow_dispatch:
 
 jobs:
@@ -25,3 +25,12 @@ jobs:
 
       - name: Executar bot
         run: python SteamBot.py
+        
+      - name: Commit e push de index.html e banco.db
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add index.html dados.db
+          git commit -m "Update: atualiza index.html e banco de dados via GitHub Actions" || echo "Nenhuma notícia nova"
+          git push
