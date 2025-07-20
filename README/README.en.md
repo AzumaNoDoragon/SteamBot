@@ -36,7 +36,7 @@ Steam keeps a news history only for games played in the last six months, which c
    python SteamBot.py
    ```
 5. The program will fetch games, collect news, generate the HTML, and send the email to the configured recipients.
-6. The generated HTML will also be saved in `utils/card.html`.
+6. The generated HTML will also be saved in `index.html`.
 
 > **Notes**
 > - Email sending uses Gmail SMTP. Make sure to allow access or use an app password.
@@ -50,7 +50,7 @@ Steam keeps a news history only for games played in the last six months, which c
 - `utils/utilsSQL.py`: Functions for manipulating the SQLite database.
 - `utils/utilsEmail.py`: Functions for building HTML and sending email.
 - `utils/secrets.json`: User and credential configuration (not included in the repository).
-- `utils/card.html`: File generated with the email content in HTML.
+- `index.html`: File generated with the email content in HTML.
 
 ## Example
 

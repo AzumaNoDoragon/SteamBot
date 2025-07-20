@@ -137,7 +137,7 @@ for usuario, origens in noticias_por_usuario.items():
 
 if email:
     emailFinal = htmlInicio() + "\n".join(email) + htmlFinal()
-    with open("utils/card.html", "w", encoding="utf-8") as arquivo:
+    with open("utils/index.html", "w", encoding="utf-8") as arquivo:
         arquivo.write(emailFinal)
 
     try:

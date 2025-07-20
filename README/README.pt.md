@@ -36,7 +36,7 @@ A Steam mantém um histórico de notícias apenas para jogos jogados nos último
    python SteamBot.py
    ```
 5. O programa irá buscar os jogos, coletar notícias, gerar o HTML e enviar o e-mail para os destinatários configurados.
-6. O HTML gerado também ficará salvo em `utils/card.html`.
+6. O HTML gerado também ficará salvo em `index.html`.
 
 > **Notas**
 > - O envio de e-mail utiliza SMTP do Gmail. Certifique-se de liberar acesso ou usar senha de app.
@@ -50,7 +50,7 @@ A Steam mantém um histórico de notícias apenas para jogos jogados nos último
 - `utils/utilsSQL.py`: Funções para manipulação do banco SQLite.
 - `utils/utilsEmail.py`: Funções para montagem do HTML e envio de e-mail.
 - `utils/secrets.json`: Configuração dos usuários e credenciais (não incluído no repositório).
-- `utils/card.html`: Arquivo gerado com o conteúdo do e-mail em HTML.
+- `index.html`: Arquivo gerado com o conteúdo do e-mail em HTML.
 
 ## Exemplo de uso
 
