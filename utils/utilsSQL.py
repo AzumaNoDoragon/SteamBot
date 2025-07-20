@@ -96,7 +96,7 @@ def arrumaNomes(nome, appid):
         UPDATE 
             jogos 
         SET 
-            nome = ?
+            name = ?
         WHERE 
             appid = ?
     ''', (nome, appid))
