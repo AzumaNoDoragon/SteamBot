@@ -1,3 +1,4 @@
+print("Importanto bibliotecas...")
 import json
 from utils.utilsSQL import *
 from utils.utilsAPI import *
