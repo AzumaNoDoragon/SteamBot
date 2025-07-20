@@ -39,7 +39,7 @@ for user in accounts:
             try:
                 insertJogo(appId, username, "wishlist", nome)
             except Exception as e:
-                print(f"Erro ao inserir jogo: {e}")
+                print(f"[wishlist][insertJogo] Erro ao inserir jogo '{nome}' (appid={appId}) para usuário '{username}': {type(e).__name__} - {e}")
 
             for noticia in news["appnews"]["newsitems"]:
                 enviado = 1
@@ -51,15 +51,16 @@ for user in accounts:
                     timestamp = noticia.get("date", time.time())
                     data = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
                 except Exception as e:
-                    print(f"Erro ao inserir jogo: {e}")
+                    data = "1970-01-01 00:00:00"
+                    print(f"[wishlist][dataNoticia] Erro ao converter data da notícia (gid={gid}, appid={appId}): {type(e).__name__} - {e}")
 
                 try:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
                 except Exception as e:
-                    print(f"Erro ao inserir jogo: {e}")
+                    print(f"[wishlist][insertNoticia] Erro ao inserir notícia (gid={gid}, appid={appId}, user='{username}'): {type(e).__name__} - {e}")
             print(f"Jogo {appId} adicionado para {username} à wishlist")
         except Exception as e:
-            print(f"Erro ao inserir jogo: {e}")
+            print(f"[wishlist][Geral] Erro inesperado ao processar appid={appId} para user='{username}': {type(e).__name__} - {e}")
     
     biblioteca = jogosBiblioteca(key, userId)
     for item in biblioteca["response"]["games"]:
@@ -76,7 +77,7 @@ for user in accounts:
             try:
                 insertJogo(appId, username, "biblioteca", nome)
             except Exception as e:
-                print(f"Erro ao inserir jogo: {e}")
+                print(f"[biblioteca][insertJogo] Erro ao inserir jogo '{nome}' (appid={appId}) para usuário '{username}': {type(e).__name__} - {e}")
 
             for noticia in news["appnews"]["newsitems"]:
                 enviado = 0
@@ -88,14 +89,15 @@ for user in accounts:
                     timestamp = noticia.get("date", time.time())
                     data = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
                 except Exception as e:
-                    print(f"Erro ao inserir jogo: {e}")
+                    data = "1970-01-01 00:00:00"
+                    print(f"[biblioteca][dataNoticia] Erro ao converter data da notícia (gid={gid}, appid={appId}): {type(e).__name__} - {e}")
 
                 try:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
                 except Exception as e:
-                    print(f"Erro ao inserir jogo: {e}")
+                    print(f"[biblioteca][insertNoticia] Erro ao inserir notícia (gid={gid}, appid={appId}, user='{username}'): {type(e).__name__} - {e}")
         except Exception as e:
-            print(f"Erro ao inserir jogo: {e}")
+            print(f"[biblioteca][Geral] Erro inesperado ao processar appid={appId} para user='{username}': {type(e).__name__} - {e}")
 
 conn = conectar()
 cursor = conn.cursor()
@@ -149,7 +151,7 @@ if email:
             conn.rollback()
     except Exception as e:
         conn.rollback()
-        print(f"Erro {e}")
+        print(f"Erro ao inserir novas noticias ao banco de dados: {e}")
     finally:
         conn.close()
 
