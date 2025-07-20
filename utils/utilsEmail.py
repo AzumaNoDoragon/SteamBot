@@ -18,10 +18,8 @@ def envia_email_gmail(emailBot, senha, emailDestino, emailHtml):
             smtp.starttls()
             smtp.login(remetente, senha_app)
             smtp.send_message(msg)
-        print(f"Email enviado para {emailDestino}")
         return True
-    except Exception as e:
-        print(f"Erro ao enviar para {emailDestino}: {e}")
+    except:
         return False
     
 def imagem_valida(appId):

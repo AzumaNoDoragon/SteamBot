@@ -54,7 +54,6 @@ for user in accounts:
 
                 try:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
-                    print(f"Jogo {appId} adicionado para {username} à wishlist: {gid}")
                 except Exception as e:
                     print(f"Erro ao inserir jogo: {e}")
         except Exception as e:

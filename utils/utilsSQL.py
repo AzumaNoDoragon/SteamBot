@@ -115,9 +115,7 @@ def manterUltimas10Noticias(appid):
             )
         ''', (appid,))
         conn.commit()
-        print(f"Noticias antigas removidas para appid {appid}")
-    except Exception as e:
-        print(f"Erro ao limpar noticias para {appid}: {e}")
+    except:
         conn.rollback()
     finally:
         conn.close()
