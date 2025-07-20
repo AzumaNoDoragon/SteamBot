@@ -10,9 +10,9 @@ def jogosWishlist(key, userId, tentativas=5):
         if tentativas > 0:
             print(f"Erro ao buscar user {userId}, para wishlist, tentando novamente em 60s... ({tentativas} tentativas restantes)")
             time.sleep(60)
-            return nomeJogo(key, userId, tentativas - 1)
+            return jogosWishlist(key, userId, tentativas - 1)
         else:
-            print(f"Falha permanente ao buscar appid {userId}: {e}")
+            print(f"Falha permanente no jogosWishlist ao buscar appid {userId}: {e}")
             return {f"{userId}": {"data": {"name": "Erro"}}}
 
 def jogosBiblioteca(key, userId, tentativas=5):
@@ -25,9 +25,9 @@ def jogosBiblioteca(key, userId, tentativas=5):
         if tentativas > 0:
             print(f"Erro ao buscar user {userId}, para bilioteca,tentando novamente em 60s... ({tentativas} tentativas restantes)")
             time.sleep(60)
-            return nomeJogo(key, userId, tentativas - 1)
+            return jogosBiblioteca(key, userId, tentativas - 1)
         else:
-            print(f"Falha permanente ao buscar appid {userId}: {e}")
+            print(f"Falha permanente no jogosBiblioteca ao buscar appid {userId}: {e}")
             return {f"{userId}": {"data": {"name": "Erro"}}}
 
 def nomeJogo(appId, tentativas = 5):
@@ -42,7 +42,7 @@ def nomeJogo(appId, tentativas = 5):
             time.sleep(60)
             return nomeJogo(appId, tentativas - 1)
         else:
-            print(f"Falha permanente ao buscar appid {appId}: {e}")
+            print(f"Falha permanente no nomeJogo ao buscar appid {appId}: {e}")
             return {f"{appId}": {"data": {"name": "Erro"}}}
 
 def noticiasJogo(appId, tentativas=5):
@@ -55,7 +55,7 @@ def noticiasJogo(appId, tentativas=5):
         if tentativas > 0:
             print(f"Erro ao buscar appid {appId}, para noticias do jogo, tentando novamente em 60s... ({tentativas} tentativas restantes)")
             time.sleep(60)
-            return nomeJogo(appId, tentativas - 1)
+            return noticiasJogo(appId, tentativas - 1)
         else:
-            print(f"Falha permanente ao buscar appid {appId}: {e}")
+            print(f"Falha permanente no noticiasJogo ao buscar appid {appId}: {e}")
             return {f"{appId}": {"data": {"name": "Erro"}}}
