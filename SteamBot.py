@@ -73,7 +73,6 @@ for user in accounts:
                 nome = "Erro"
             
             try:
-                print("Tentando inserir no banco")
                 insertJogo(appId, username, "biblioteca", nome)
             except Exception as e:
                 print(f"Erro ao inserir jogo: {e}")
