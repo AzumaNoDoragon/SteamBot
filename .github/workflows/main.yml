@@ -20,7 +20,7 @@ jobs:
       - name: Descriptografar secrets.json
         run: |
           echo "${{ secrets.SECRETS_KEY }}" > key.txt
-          openssl aes-256-cbc -d -a -in secrets.json.enc -out secrets.json -pass file:./key.txt
+          openssl aes-256-cbc -d -a -in utils/secrets.json.enc -out utils/secrets.json -pass file:./key.txt
           rm key.txt
 
       - name: Executar bot
