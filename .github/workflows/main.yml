@@ -1,0 +1,27 @@
+name: SteamBot News
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # Executa todo dia ao meio-dia UTC
+  workflow_dispatch:
+
+jobs:
+  enviar-noticias:
+    name: Enviar Notícias da Steam por E-mail
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Descriptografar secrets.json
+        run: |
+          echo "${{ secrets.SECRETS_KEY }}" > key.txt
+          openssl aes-256-cbc -d -a -in secrets.json.enc -out secrets.json -pass file:./key.txt
+          rm key.txt
+
+      - name: Executar bot
+        run: python SteamBot.py
