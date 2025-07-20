@@ -3,6 +3,7 @@ import requests, time
 def jogosWishlist(key, userId, tentativas=5):
     '''Busca o `ID` de todos os jogos da `Lista de desejos` na API da steam, tenta ao menos 5 vezes com um intervalo de 10 segundos'''
     try:
+        time.sleep(1)
         wishlistResponse = requests.get(f"https://api.steampowered.com/IWishlistService/GetWishlist/v1/?key={key}&steamid={userId}")
         wishlistResponse.raise_for_status()
         return wishlistResponse.json()
@@ -18,6 +19,7 @@ def jogosWishlist(key, userId, tentativas=5):
 def jogosBiblioteca(key, userId, tentativas=5):
     '''Busca o `ID` de todos os jogos da `Biblioteca` na API da steam, tenta ao menos 5 vezes com um intervalo de 10 segundos'''
     try:
+        time.sleep(1)
         bibliotecaResponse = requests.get(f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={key}&steamid={userId}&format=json")
         bibliotecaResponse.raise_for_status()
         return bibliotecaResponse.json()
@@ -33,6 +35,7 @@ def jogosBiblioteca(key, userId, tentativas=5):
 def nomeJogo(appId, tentativas = 5):
     '''Busca o `Nome` do jogo com base no `appID` na API da steam, tenta ao menos 5 vezes com um intervalo de 10 segundos'''
     try:
+        time.sleep(1)
         jogosResponse = requests.get(f"https://store.steampowered.com/api/appdetails?appids={appId}")
         jogosResponse.raise_for_status()
         return jogosResponse.json()
@@ -48,6 +51,7 @@ def nomeJogo(appId, tentativas = 5):
 def noticiasJogo(appId, tentativas=5):
     '''Verifica as 10 noticias mais recentes na API da Steam, tenta ao menos 5 vezes com um intervalo de 10 segundos'''
     try:
+        time.sleep(1)
         newsResponse = requests.get(f"https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appId}&count=10&maxlength=300&format=json")
         newsResponse.raise_for_status()
         return newsResponse.json()
