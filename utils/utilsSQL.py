@@ -99,6 +99,8 @@ def arrumaNomes(nome, appid):
             name = ?
         WHERE 
             appid = ?
+        AND
+            name = "Erro"
     ''', (nome, appid))
     conn.commit()
     conn.close()
