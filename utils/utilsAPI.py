@@ -8,8 +8,8 @@ def jogosWishlist(key, userId, tentativas=5):
         return wishlistResponse.json()
     except Exception as e:
         if tentativas > 0:
-            print(f"Erro ao buscar user {userId}, para wishlist, tentando novamente em 10s... ({tentativas} tentativas restantes)")
-            time.sleep(10)
+            print(f"Erro ao buscar user {userId}, para wishlist, tentando novamente em 60s... ({tentativas} tentativas restantes)")
+            time.sleep(60)
             return nomeJogo(key, userId, tentativas - 1)
         else:
             print(f"Falha permanente ao buscar appid {userId}: {e}")
@@ -23,8 +23,8 @@ def jogosBiblioteca(key, userId, tentativas=5):
         return bibliotecaResponse.json()
     except Exception as e:
         if tentativas > 0:
-            print(f"Erro ao buscar user {userId}, para bilioteca,tentando novamente em 10s... ({tentativas} tentativas restantes)")
-            time.sleep(10)
+            print(f"Erro ao buscar user {userId}, para bilioteca,tentando novamente em 60s... ({tentativas} tentativas restantes)")
+            time.sleep(60)
             return nomeJogo(key, userId, tentativas - 1)
         else:
             print(f"Falha permanente ao buscar appid {userId}: {e}")
@@ -38,8 +38,8 @@ def nomeJogo(appId, tentativas = 5):
         return jogosResponse.json()
     except Exception as e:
         if tentativas > 0:
-            print(f"Erro ao buscar appid {appId}, para nome do jogo, tentando novamente em 10s... ({tentativas} tentativas restantes)")
-            time.sleep(10)
+            print(f"Erro ao buscar appid {appId}, para nome do jogo, tentando novamente em 60s... ({tentativas} tentativas restantes)")
+            time.sleep(60)
             return nomeJogo(appId, tentativas - 1)
         else:
             print(f"Falha permanente ao buscar appid {appId}: {e}")
@@ -53,8 +53,8 @@ def noticiasJogo(appId, tentativas=5):
         return newsResponse.json()
     except Exception as e:
         if tentativas > 0:
-            print(f"Erro ao buscar appid {appId}, para noticias do jogo, tentando novamente em 10s... ({tentativas} tentativas restantes)")
-            time.sleep(10)
+            print(f"Erro ao buscar appid {appId}, para noticias do jogo, tentando novamente em 60s... ({tentativas} tentativas restantes)")
+            time.sleep(60)
             return nomeJogo(appId, tentativas - 1)
         else:
             print(f"Falha permanente ao buscar appid {appId}: {e}")

@@ -2,7 +2,8 @@ import requests
 import smtplib
 from email.message import EmailMessage
 
-def envia_email_gmail(emailBot, senha, emailDestino, emailHtml):
+def enviaEmailGmail(emailBot, senha, emailDestino, emailHtml):
+    '''Monta o email, com remetente, destinatario, assunto e outros.'''
     remetente = f"{emailBot}"
     senha_app = f"{senha}"
 
@@ -18,11 +19,14 @@ def envia_email_gmail(emailBot, senha, emailDestino, emailHtml):
             smtp.starttls()
             smtp.login(remetente, senha_app)
             smtp.send_message(msg)
+        print(f"Email enviado para {emailDestino}")
         return True
-    except:
+    except Exception as e:
+        print(f"Erro ao enviar para {emailDestino}: {e}")
         return False
     
 def imagem_valida(appId):
+    '''Seleciona qual a imagem está funcionado para determinado jogo, visto que nem todos os jogos possuem todos tipos'''
     urls = [
         f"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/hero_capsule.jpg",
         f"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/library_600x900.jpg",
@@ -46,6 +50,7 @@ def imagem_valida(appId):
     return bug_image
 
 def corpoEmail(nome, title, data, content, url, appId):
+    '''Monta o corpo de email, se replicando para quantas noticias tem'''
     imagem = imagem_valida(appId)
     return f"""
         <div style="background-color: #fefefe; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; margin-bottom: 10px;">
@@ -64,6 +69,7 @@ def corpoEmail(nome, title, data, content, url, appId):
     """
 
 def htmlInicio():
+    '''Inicio padrão para o corpo do email'''
     return """
         <!DOCTYPE html>
         <html lang="pt-BR">
@@ -76,6 +82,7 @@ def htmlInicio():
     """
 
 def htmlFinal():
+    '''Final padrão para o corpo do email'''
     return """
             </body>
         </html>

@@ -73,6 +73,7 @@ def selectNovasNoticias():
     return resultado
 
 def buscaNomesErros():
+    '''Pega os nomes com `Erro` do banco de dados'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute('''
@@ -88,6 +89,7 @@ def buscaNomesErros():
     return resultados
 
 def arrumaNomes(nome, appid):
+    '''Tenta corrigir os nomes dos bancos de dados com `Erro`'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute('''
@@ -102,6 +104,7 @@ def arrumaNomes(nome, appid):
     conn.close()
 
 def manterUltimas10Noticias(appid):
+    '''Deleta do banco todas as noticias excedidas de jogos em mais de 10'''
     conn = conectar()
     cursor = conn.cursor()
     try:
@@ -115,12 +118,15 @@ def manterUltimas10Noticias(appid):
             )
         ''', (appid,))
         conn.commit()
-    except:
+        print(f"Noticias antigas removidas para appid {appid}")
+    except Exception as e:
+        print(f"Erro ao limpar noticias para {appid}: {e}")
         conn.rollback()
     finally:
         conn.close()
 
 def limparNoticiasAntigas():
+    '''Seleciona os appId para selecionar o que pode ser apagado de noticias'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute('SELECT DISTINCT appid FROM noticias')

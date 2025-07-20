@@ -4,7 +4,7 @@ from utils.utilsAPI import *
 from utils.utilsEmail import *
 from collections import defaultdict
 from datetime import datetime
-
+print("Iniciando...")
 criaTabelas()
 with open("utils/secrets.json", "r", encoding="utf-8") as arquivo:
     dados = json.load(arquivo)
@@ -54,6 +54,7 @@ for user in accounts:
 
                 try:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
+                    print(f"Jogo {appId} adicionado para {username} à wishlist: {gid}")
                 except Exception as e:
                     print(f"Erro ao inserir jogo: {e}")
         except Exception as e:
@@ -72,6 +73,7 @@ for user in accounts:
                 nome = "Erro"
             
             try:
+                print("Tentando inserir no banco")
                 insertJogo(appId, username, "biblioteca", nome)
             except Exception as e:
                 print(f"Erro ao inserir jogo: {e}")
@@ -140,7 +142,7 @@ if email:
         arquivo.write(emailFinal)
 
     try:
-        emailEnviado = envia_email_gmail(emailBot, senha, emailDestino, emailFinal)
+        emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)
         if emailEnviado:
             conn.commit()
         else:
@@ -161,3 +163,4 @@ for (appId,) in nomesErrados:
     arrumaNomes(nomeCerto, appId)
 
 limparNoticiasAntigas()
+print("Fim da execução...")
