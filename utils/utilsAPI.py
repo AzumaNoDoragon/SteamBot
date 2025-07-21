@@ -2,11 +2,9 @@ import requests, time
 
 def requisitaAPI(urlRequest):
     '''Centraliza a lógica de requisição, com timeout de 5s para conexão e 10 para resposta'''
-    time.sleep(1)
     try:
         response = requests.get(urlRequest, timeout=(5, 10))
         if response.status_code == 200:
-            print(f"Sucesso na requisição: (Status {response.status_code})")
             return response
         else:
             print(f"Resposta recebida com status {response.status_code} para {urlRequest}")
@@ -80,7 +78,7 @@ def nomeJogo(appId, tentativas = 5):
 def noticiasJogo(appId, tentativas=5):
     '''Verifica as 10 noticias mais recentes na API da Steam, tenta ao menos 5 vezes com um intervalo de 10 segundos'''
     try:
-        urlRequest = f"https://store.steampowered.com/api/appdetails?appids={appId}"
+        urlRequest = f"https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appId}&count=10&maxlength=300&format=json"
         newsResponse = requisitaAPI(urlRequest)
 
         if newsResponse is None:
