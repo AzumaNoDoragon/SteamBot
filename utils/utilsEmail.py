@@ -68,9 +68,9 @@ def corpoEmail(nome, title, data, content, url, appId):
         </div>
     """
 
-def htmlInicio():
+def htmlInicio(agora):
     '''Inicio padrão para o corpo do email'''
-    return """
+    return f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
             <head>
@@ -78,7 +78,7 @@ def htmlInicio():
                 <title>Notícias da Steam</title>
             </head>
             <body style="background-color: #f5f5f5; padding: 20px; font-family: Arial, sans-serif;">
-                <h1 style="text-align: center; color: #333;">Notícias</h1>
+                <h1 style="text-align: center; color: #333;">Notícias Steam Data: {agora.strftime("%d/%m/%Y %H:%M:%S")}</h1>
     """
 
 def htmlFinal():
