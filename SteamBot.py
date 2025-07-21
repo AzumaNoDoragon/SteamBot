@@ -58,7 +58,7 @@ for user in accounts:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
                 except Exception as e:
                     print(f"[wishlist][insertNoticia] Erro ao inserir notícia (gid={gid}, appid={appId}, user='{username}'): {type(e).__name__} - {e}")
-            print(f"Jogo {appId} adicionado para {username} à wishlist")
+            print(f"Jogo {appId} adicionado para {username} na wishlist")
         except Exception as e:
             print(f"[wishlist][Geral] Erro inesperado ao processar appid={appId} para user='{username}': {type(e).__name__} - {e}")
     
@@ -96,6 +96,7 @@ for user in accounts:
                     insertNoticia(appId, gid, title, url, content, data, enviado)
                 except Exception as e:
                     print(f"[biblioteca][insertNoticia] Erro ao inserir notícia (gid={gid}, appid={appId}, user='{username}'): {type(e).__name__} - {e}")
+                print(f"Jogo {appId} adicionado para {username} na biblioteca")
         except Exception as e:
             print(f"[biblioteca][Geral] Erro inesperado ao processar appid={appId} para user='{username}': {type(e).__name__} - {e}")
 
@@ -139,7 +140,8 @@ for usuario, origens in noticias_por_usuario.items():
     email.append("</div>")
 
 if email:
-    emailFinal = htmlInicio() + "\n".join(email) + htmlFinal()
+    agora = datetime.now()
+    emailFinal = htmlInicio(agora) + "\n".join(email) + htmlFinal()
     with open("utils/index.html", "w", encoding="utf-8") as arquivo:
         arquivo.write(emailFinal)
 
@@ -161,7 +163,7 @@ for (appId,) in nomesErrados:
     try:
         nomeCerto = nomeCerto[f"{appId}"]["data"]["name"]
     except:
-        nomeCerto = "Erro"
+        nomeCerto = "Nameless"
     arrumaNomes(nomeCerto, appId)
 
 limparNoticiasAntigas()
