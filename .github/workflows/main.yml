@@ -31,6 +31,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add index.html dados.db
-          git commit -m "Chore: atualiza index.html e banco de dados via GitHub Actions" || echo "Nenhuma notícia nova"
-          git push
+          git add index.html
+          git commit -m "Chore: atualiza index.html com as noticias do dia via GitHub Actions" || true
+
+          git add dados.db
+          git commit -m "Chore: atualiza banco de dados com as noticias do dia e removendo as excedentes via GitHub Actions" || true
+
+          git diff --quiet HEAD || git push
