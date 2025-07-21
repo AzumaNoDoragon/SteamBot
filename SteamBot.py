@@ -100,62 +100,143 @@ for user in accounts:
         except Exception as e:
             print(f"[biblioteca][Geral] Erro inesperado ao processar appid={appId} para user='{username}': {type(e).__name__} - {e}")
 
+try:
+    appIdSteam = 593110
+    steamUser = "Steam"
+    jogo = nomeJogo(appIdSteam)
+    news = noticiasJogo(appIdSteam)
+    try:
+        nome = jogo[f"{appIdSteam}"]["data"]["name"]
+    except:
+        nome = "Erro"
+    
+    try:
+        insertJogo(appIdSteam, steamUser, "steam", nome)
+    except Exception as e:
+        print(f"[steam][insertJogo] Erro ao inserir jogo '{nome}' (appid={appIdSteam}) para usuário '{steamUser}': {type(e).__name__} - {e}")
+    
+    for noticia in news["appnews"]["newsitems"]:
+        enviado = 0
+        gid = noticia.get("gid", "Sem gid")
+        title = noticia.get("title" , "Sem title")
+        url = noticia.get("url" , "Sem url") 
+        content = noticia.get("contents" , "Sem contents")
+        try:
+            timestamp = noticia.get("date", time.time())
+            data = datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+        except Exception as e:
+            data = "1970-01-01 00:00:00"
+            print(f"[steam][dataNoticia] Erro ao converter data da notícia (gid={gid}, appid={appIdSteam}): {type(e).__name__} - {e}")
+
+        try:
+            insertNoticia(appIdSteam, gid, title, url, content, data, enviado)
+        except Exception as e:
+            print(f"[steam][insertNoticia] Erro ao inserir notícia (gid={gid}, appid={appIdSteam}, user='{steamUser}'): {type(e).__name__} - {e}")
+    print(f"Jogo {appIdSteam} adicionado para {steamUser} na steam")
+except Exception as e:
+    print(f"[steam][Geral] Erro inesperado ao processar appid={appIdSteam} para user='{steamUser}': {type(e).__name__} - {e}")
+
 conn = conectar()
 cursor = conn.cursor()
 email = []
 novasNoticias = selectNovasNoticias()
-noticias_por_usuario = defaultdict(lambda: {"biblioteca": [], "wishlist": []})
 
-for noticia in novasNoticias:
-    appid, gid, titulo, url, conteudo, data, enviado, nome, username, categoria = noticia
-    noticias_por_usuario[username][categoria].append(
-        (appid, gid, titulo, url, conteudo, data, nome)
-    )
+try:
+    noticiasSteam = defaultdict(lambda: {"steam": []})
 
-for usuario, origens in noticias_por_usuario.items():
-    email.append(f"""
-        <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
-            <h2 style="font-family:Arial; color: white; margin-top: 0;">Notícias dos jogos de {usuario}</h2>
-    """)
+    for noticia in novasNoticias:
+        appid, gid, titulo, url, conteudo, data, enviado, nome, username, categoria = noticia
+        noticiasSteam[username][categoria].append(
+            (appid, gid, titulo, url, conteudo, data, nome)
+        )
 
-    for tipo in ["biblioteca", "wishlist"]:
-        noticias = origens.get(tipo, [])
-        if noticias:
-            categoria = "Biblioteca" if tipo == "biblioteca" else "Wishlist"
-            email.append(f"""
-                <div style="background-color: #90a0b0; padding: 15px; border-radius: 8px; margin-top: 15px;">
-                    <h3 style="font-family:Arial; color:#ffffff; margin-top: 0;">{categoria}</h3>
-            """)
+    for usuario, origens in noticiasSteam.items():
+        email.append(f"""
+            <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
+                <h2 style="font-family:Arial; color: white; margin-top: 0;">Notícias da Steam</h2>
+        """)
 
-            for noticia in noticias:
-                appid, gid, titulo, url, conteudo, data, nome_jogo = noticia
-                cursor.execute('''
-                    UPDATE noticias
-                    SET enviado = 1
-                    WHERE appid = ? AND gid = ?
-                ''', (appid, gid))
-                email.append(corpoEmail(nome_jogo, titulo, data, conteudo, url, appid))
-            
-            email.append("</div>")
-    email.append("</div>")
+        for tipo in ["steam"]:
+            noticias = origens.get(tipo, [])
+            if noticias:
+                categoria = "steam"
+                email.append(f"""
+                    <div style="background-color: #90a0b0; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <h3 style="font-family:Arial; color:#ffffff; margin-top: 0;">{categoria}</h3>
+                """)
 
-if email:
-    agora = datetime.now()
-    emailFinal = htmlInicio(agora) + "\n".join(email) + htmlFinal()
-    with open("utils/index.html", "w", encoding="utf-8") as arquivo:
-        arquivo.write(emailFinal)
+                for noticia in noticias:
+                    appid, gid, titulo, url, conteudo, data, nomeDoJogo = noticia
+                    cursor.execute('''
+                        UPDATE noticias
+                        SET enviado = 1
+                        WHERE appid = ? AND gid = ?
+                    ''', (appid, gid))
+                    email.append(corpoEmail(nomeDoJogo, titulo, data, conteudo, url, appid))
+                
+                email.append("</div>")
+        email.append("</div>")
+except Exception as e:
+    print(f"Erro ao criar e atualizar as noticias da Steam {e}")
 
-    try:
-        emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)
-        if emailEnviado:
-            conn.commit()
-        else:
+try:
+    noticiasPorUsuario = defaultdict(lambda: {"biblioteca": [], "wishlist": []})
+
+    for noticia in novasNoticias:
+        appid, gid, titulo, url, conteudo, data, enviado, nome, username, categoria = noticia
+        noticiasPorUsuario[username][categoria].append(
+            (appid, gid, titulo, url, conteudo, data, nome)
+        )
+
+    for usuario, origens in noticiasPorUsuario.items():
+        email.append(f"""
+            <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
+                <h2 style="font-family:Arial; color: white; margin-top: 0;">Notícias dos jogos de {usuario}</h2>
+        """)
+
+        for tipo in ["biblioteca", "wishlist"]:
+            noticias = origens.get(tipo, [])
+            if noticias:
+                categoria = "Biblioteca" if tipo == "biblioteca" else "Wishlist"
+                email.append(f"""
+                    <div style="background-color: #90a0b0; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <h3 style="font-family:Arial; color:#ffffff; margin-top: 0;">{categoria}</h3>
+                """)
+
+                for noticia in noticias:
+                    appid, gid, titulo, url, conteudo, data, nomeDoJogo = noticia
+                    cursor.execute('''
+                        UPDATE noticias
+                        SET enviado = 1
+                        WHERE appid = ? AND gid = ?
+                    ''', (appid, gid))
+                    email.append(corpoEmail(nomeDoJogo, titulo, data, conteudo, url, appid))
+                
+                email.append("</div>")
+        email.append("</div>")
+except Exception as e:
+    print(f"Erro ao criar e atualizar as noticias de user {e}")
+
+try:
+    if email:
+        agora = datetime.now()
+        emailFinal = htmlInicio(agora) + "\n".join(email) + htmlFinal()
+        with open("utils/index.html", "w", encoding="utf-8") as arquivo:
+            arquivo.write(emailFinal)
+
+        try:
+            emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)
+            if emailEnviado:
+                conn.commit()
+            else:
+                conn.rollback()
+        except Exception as e:
             conn.rollback()
-    except Exception as e:
-        conn.rollback()
-        print(f"Erro ao inserir novas noticias ao banco de dados: {e}")
-    finally:
-        conn.close()
+            print(f"Erro ao inserir novas noticias ao banco de dados: {e}")
+        finally:
+            conn.close()
+except Exception as e:
+    print(f"Erro ao criar o email {e}")
 
 nomesErrados = buscaNomesErros()
 for (appId,) in nomesErrados:
