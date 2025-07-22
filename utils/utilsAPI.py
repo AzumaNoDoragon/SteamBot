@@ -18,6 +18,7 @@ def requisitaAPI(urlRequest):
     return None
 
 def tempoEntreRequisicao(urlRequest, tentativas):
+    '''Retorna a informação de erro e espera 60s para outra requisição'''
     print(f"Erro ao buscar {urlRequest}, tentando novamente em 60s... ({tentativas} tentativas restantes)")
     time.sleep(60)
 
