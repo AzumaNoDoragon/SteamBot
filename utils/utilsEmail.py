@@ -5,7 +5,7 @@ from email.message import EmailMessage
 def enviaEmailGmail(emailBot, senha, emailDestino, emailHtml):
     '''Monta o email, com remetente, destinatario, assunto e outros.'''
     remetente = f"{emailBot}"
-    senha_app = f"{senha}"
+    senhaApp = f"{senha}"
 
     msg = EmailMessage()
     msg['Subject'] = "Steam News"
@@ -17,7 +17,7 @@ def enviaEmailGmail(emailBot, senha, emailDestino, emailHtml):
     try:
         with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
             smtp.starttls()
-            smtp.login(remetente, senha_app)
+            smtp.login(remetente, senhaApp)
             smtp.send_message(msg)
         print(f"Email enviado para {emailDestino}")
         return True
@@ -25,7 +25,7 @@ def enviaEmailGmail(emailBot, senha, emailDestino, emailHtml):
         print(f"Erro ao enviar para {emailDestino}: {e}")
         return False
     
-def imagem_valida(appId):
+def imagemValida(appId):
     '''Seleciona qual a imagem está funcionado para determinado jogo, visto que nem todos os jogos possuem todos tipos'''
     urls = [
         f"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/hero_capsule.jpg",
@@ -38,7 +38,7 @@ def imagem_valida(appId):
         f"https://cdn.akamai.steamstatic.com/steam/apps/{appId}/background.jpg"
     ]
     
-    bug_image = "https://img.freepik.com/vetores-gratis/glitch-error-404-page-background_23-2148072533.jpg"
+    bugImage = "https://img.freepik.com/vetores-gratis/glitch-error-404-page-background_23-2148072533.jpg"
     
     for url in urls:
         try:
@@ -47,11 +47,11 @@ def imagem_valida(appId):
                 return url
         except requests.RequestException:
             continue
-    return bug_image
+    return bugImage
 
 def corpoEmail(nome, title, data, content, url, appId):
     '''Monta o corpo de email, se replicando para quantas noticias tem'''
-    imagem = imagem_valida(appId)
+    imagem = imagemValida(appId)
     return f"""
         <div style="background-color: #fefefe; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; margin-bottom: 10px;">
             <div style="width: 120px; min-width: 100px; align-self: Right;">
