@@ -42,15 +42,15 @@ def insertJogo(appId, username, categoria, nome):
     conn.commit()
     conn.close()
     
-def insertNoticia(appId, gid, title, url, content, data, enviado):
+def insertNoticia(appId, gid, title, url, content, data):
     '''Insere as noticias mais recentes, caso exista novas noticias.'''
     conn = conectar()
     query = f"INSERT OR IGNORE INTO noticias (appid, gid, title, url, content, data, enviado) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    conn.execute(query, (appId, gid, title, url, content, data, enviado))
+    conn.execute(query, (appId, gid, title, url, content, data, 0))
     conn.commit()
     conn.close()
 
-def selectNovasNoticias():
+def selectNovasNoticias(user):
     '''Seleciona as noticias com `enviado = 0` para criar os card de noticia para enviar pelo e-mail'''
     conn = conectar()
     cursor = conn.cursor()
@@ -62,12 +62,10 @@ def selectNovasNoticias():
         INNER JOIN
             jogos On noticias.appid = jogos.appid
         WHERE
-            noticias.enviado = 0
+            noticias.enviado = 0 AND jogos.username = ?
         ORDER BY
-            jogos.username,
-            jogos.categoria = 'wishlist',
             noticias.data DESC
-    ''')
+    ''', (user,))
     resultado = cursor.fetchall()
     conn.close()
     return resultado
@@ -120,7 +118,6 @@ def manterUltimas10Noticias(appid):
             )
         ''', (appid,))
         conn.commit()
-        print(f"Noticias antigas removidas para appid {appid}")
     except Exception as e:
         print(f"Erro ao limpar noticias para {appid}: {e}")
         conn.rollback()
@@ -137,3 +134,16 @@ def limparNoticiasAntigas():
 
     for appid in appids:
         manterUltimas10Noticias(appid)
+
+def jogoNoDB(appid):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT name FROM jogos
+        WHERE appid = ?
+        LIMIT 1
+    """, (appid,))
+    resultado = cursor.fetchone()
+    conn.close()
+
+    return resultado[0] if resultado else None
