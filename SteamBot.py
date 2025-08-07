@@ -105,6 +105,7 @@ try:
             emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)
             if emailEnviado:
                 conn.commit()
+                print("Commitou")
             else:
                 conn.rollback()
         except Exception as e:
