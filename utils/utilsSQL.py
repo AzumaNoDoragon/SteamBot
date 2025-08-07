@@ -10,15 +10,14 @@ def criaTabelas():
     '''Cria as tabelas `jogos` e `noticias`, com seus atributos determinantes, caso não existam.'''
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.executescript('''
         CREATE TABLE IF NOT EXISTS jogos(
             appid TEXT PRIMARY KEY,
             username TEXT NOT NULL,
             categoria TEXT NOT NULL,
             name TEXT NOT NULL
-        )
-    ''')
-    cursor.execute('''
+        );
+    
         CREATE TABLE IF NOT EXISTS noticias(
             appid TEXT NOT NULL,
             gid TEXT NOT NULL,
@@ -28,8 +27,15 @@ def criaTabelas():
             data DATE NOT NULL,
             enviado INTEGER NOT NULL,
             PRIMARY KEY (appid, gid),                   
-            FOREIGN KEY (appid) REFERENCES jogos(appid)
-        )
+            FOREIGN KEY (appid) REFERENCES jogos(appid) ON DELETE CASCADE
+        );
+                         
+        CREATE INDEX IF NOT EXISTS idx_noticias_enviado_appid_data ON noticias(enviado, appid, data DESC);
+        CREATE INDEX IF NOT EXISTS idx_jogos_username ON jogos(username);
+        CREATE INDEX IF NOT EXISTS idx_noticias_appid_data ON noticias(appid, data DESC);
+                         
+        DROP INDEX IF EXISTS idx_noticias_enviado_data;
+        DROP INDEX IF EXISTS idx_jogos_name;
     ''')
     conn.commit()
     conn.close()
@@ -103,18 +109,18 @@ def arrumaNomes(nome, appid):
     conn.commit()
     conn.close()
 
-def manterUltimas10Noticias(appid):
-    '''Deleta do banco todas as noticias excedidas de jogos em mais de 10'''
+def manterUltimas20Noticias(appid):
+    '''Deleta do banco todas as noticias excedidas de jogos em mais de 20'''
     conn = conectar()
     cursor = conn.cursor()
     try:
         cursor.execute('''
             DELETE FROM noticias
-            WHERE rowid IN (
-                SELECT rowid FROM noticias
+            WHERE (appid, gid) IN (
+                SELECT appid, gid FROM noticias
                 WHERE appid = ?
                 ORDER BY data DESC
-                LIMIT -1 OFFSET 10
+                LIMIT -1 OFFSET 20
             )
         ''', (appid,))
         conn.commit()
@@ -133,7 +139,7 @@ def limparNoticiasAntigas():
     conn.close()
 
     for appid in appids:
-        manterUltimas10Noticias(appid)
+        manterUltimas20Noticias(appid)
 
 def jogoNoDB(appid):
     conn = conectar()
