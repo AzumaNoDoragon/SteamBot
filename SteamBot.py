@@ -1,6 +1,6 @@
 print("Importanto bibliotecas...")
 import json
-from utils.utilsSQL import criaTabelas, conectar, selectNovasNoticias, buscaNomesErros, arrumaNomes, limparNoticiasAntigas
+from utils.utilsSQL import criaTabelas, jogoNaWishlist, removerJogoDaWishlist, conectar, selectNovasNoticias, buscaNomesErros, arrumaNomes, limparNoticiasAntigas
 from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo
 from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail
 from utils.utilsSteam import processarJogo
@@ -29,8 +29,18 @@ for user in accounts:
     username = user["username"]
     userId = user["userid"]
 
-    for item in jogosWishlist(key, userId)["response"]["items"]:
+    wishlistApi = jogosWishlist(key, userId)["response"]["items"]
+    appidsApi = {int(item["appid"]) for item in wishlistApi}
+
+    appidsDb = set(jogoNaWishlist(username, "wishlist"))
+
+    for item in wishlistApi:
         processarJogo(item["appid"], username, "wishlist")
+
+    removidos = appidsDb - appidsApi
+    for appid in removidos:
+        removerJogoDaWishlist(appid)
+        print(f"Jogo {appid} removido da wishlist de {username}")
 
     for item in jogosBiblioteca(key, userId)["response"]["games"]:
         processarJogo(item["appid"], username, "biblioteca")
