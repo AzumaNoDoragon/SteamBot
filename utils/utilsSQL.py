@@ -153,3 +153,26 @@ def jogoNoDB(appid):
     conn.close()
 
     return resultado[0] if resultado else None
+
+def jogoNaWishlist(username, categoria):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT appid FROM jogos
+        WHERE username = ? AND categoria = ?
+    """, (username, categoria))
+    resultados = cursor.fetchall()
+    conn.close()
+
+    return [int(row[0]) for row in resultados]
+
+def removerJogoDaWishlist(appid):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        DELETE FROM jogos
+        WHERE appid = ?
+    """, (appid,))
+    conn.commit()
+    conn.close()
+    
