@@ -142,6 +142,7 @@ def limparNoticiasAntigas():
         manterUltimas20Noticias(appid)
 
 def jogoNoDB(appid):
+    '''Verifica se um jogo com o `appid` informado existe no banco de dados. Retorna o `name` do jogo se existir, ou `None` caso não encontrado.'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("""
@@ -155,6 +156,7 @@ def jogoNoDB(appid):
     return resultado[0] if resultado else None
 
 def jogoNaWishlist(username, categoria):
+    '''Retorna uma lista de todos os `appid` de jogos que pertencem ao `username` e estão cadastrados na categoria 'wishlist' no banco.'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("""
@@ -167,6 +169,7 @@ def jogoNaWishlist(username, categoria):
     return [int(row[0]) for row in resultados]
 
 def removerJogoDaWishlist(appid):
+    '''Remove do banco de dados o jogo com o `appid` informado que esteja na tabela `jogos`. Essa função exclui o registro independentemente do usuário associado.'''
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("""
