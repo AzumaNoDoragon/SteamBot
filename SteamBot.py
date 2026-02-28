@@ -54,6 +54,7 @@ email = []
 ITRD_KEY = os.getenv("ITRD_KEY")
 if not ITRD_KEY:
     raise ValueError("ITRD_KEY não definida no ambiente")
+count = 0
 
 try:
     for user in accounts:
@@ -66,13 +67,21 @@ try:
 
         for appid in appids:
             menorValor = menorPreçoITDA(appid, ITRD_KEY)
-            valorAtual = valorRegular(appid)
+            valorAtual, desconto = valorRegular(appid)
 
-            if menorValor == valorAtual:
-                print("Preço cheio!")
-            elif valorAtual == menorValor:
-                email.append(corpoDiscout(valorAtual, appid))
-        email.append("</div>")
+            if menorValor == None or valorAtual == None or desconto == None:
+                continue
+            print(userNews, appid, valorAtual, menorValor, desconto)
+            if menorValor == valorAtual and desconto == 0:
+                continue
+            elif valorAtual == menorValor and desconto != 0:
+                count += 1
+                print("append")
+                email.append(corpoDiscout(valorAtual, desconto, appid))
+        if count != 0:
+            email.append("</div>")
+        else:
+            email.pop()
 
     noticiasPorUsuario = defaultdict(lambda: {"steam": [], "biblioteca": [], "wishlist": []})
     novasNoticias = selectNovasNoticias("Steam")
@@ -129,8 +138,12 @@ try:
     if email:
         agora = datetime.now(ZoneInfo("America/Sao_Paulo"))
         emailFinal = htmlInicio(agora) + "\n".join(email) + htmlFinal()
+        soup = BeautifulSoup(emailFinal, "html.parser")
+        html_formatado = "\n".join(
+            linha for linha in emailFinal.splitlines() if linha.strip()
+        )
         with open("index.html", "w", encoding="utf-8") as arquivo:
-            arquivo.write(emailFinal)
+            arquivo.write(html_formatado)
 
         try:
             emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)

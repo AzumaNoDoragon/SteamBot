@@ -140,23 +140,22 @@ def valorRegular(appid):
     steam_data = valor.get(str(appid))
     
     if not steam_data:
-        print("Resposta inválida da Steam")
-        return
+        return None, None
 
     if steam_data.get("success") is False:
-        print("Jogo inválido ou removido da Steam")
-        return
+        return None, None
 
     data_field = steam_data.get("data")
 
     if not data_field or not isinstance(data_field, dict):
-        print("Jogo sem dados válidos (removido ou indisponível)")
-        return
+        return None, None
 
     priceInfo = data_field.get("price_overview")
 
     if not priceInfo:
-        print("Jogo sem preço (gratuito ou sem overview)")
-        return
+        return None, None
     
-    return priceInfo["final"] / 100
+    valorAtual = priceInfo["final"] / 100
+    desconto = priceInfo["discount_percent"]
+
+    return valorAtual, desconto

@@ -68,7 +68,7 @@ def corpoEmail(nome, title, data, content, url, appId):
         </div>
     """
 
-def corpoDiscout(valorAtual, appId):
+def corpoDiscout(valorAtual, desconto, appId):
     '''Monta o corpo de email, se replicando para quantas noticias tem'''
     imagem = imagemValida(appId)
     return f"""
@@ -78,6 +78,7 @@ def corpoDiscout(valorAtual, appId):
             </div>
             <div style="flex: 1; padding-left: 10px;">
                 <p style="margin: 5px 0; word-break: break-word;"><strong>Valor atual:</strong> {valorAtual}</p>
+                <p style="margin: 5px 0; word-break: break-word;"><strong>Porcentagem de desconto:</strong> {desconto}%</p>
                 <p style="margin: 5px 0; word-break: break-word;"><strong>Menor valor historico, hora de comprar!</strong></p>
             </div>
         </div>
