@@ -24,10 +24,10 @@ jobs:
           rm key.txt
 
       - name: Executar bot
+        env:
+          ITRD_KEY: ${{ secrets.ITRD_KEY }}
         run: |
           echo "Iniciando execução do SteamBot.py..."
-          env:
-            ITRD_KEY: ${{ secrets.ITRD_KEY }}
           python SteamBot.py
         
       - name: Commit e push de index.html e banco.db
