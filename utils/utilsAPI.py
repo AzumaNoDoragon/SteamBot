@@ -93,3 +93,69 @@ def noticiasJogo(appId, tentativas=5):
         else:
             print(f"Falha permanente no noticiasJogo ao buscar appid {appId}: {e}")
             return {f"{appId}": {"data": {"name": "Erro"}}}
+
+
+def valorAtualSteam(appId, tentativas=5):
+    try:
+        urlRequest = f"https://store.steampowered.com/api/appdetails?appids={appId}&cc=br&filters=price_overview"
+        valorAtual = requisitaAPI(urlRequest)
+        
+        if valorAtual is None:
+            raise ValueError("Resposta da API inválida ou nula para newsResponse.")
+        
+        return valorAtual.json()
+    except Exception as e:
+        if tentativas > 0:
+            tempoEntreRequisicao(urlRequest, tentativas)
+            return valorAtualSteam(appId, tentativas - 1)
+        else:
+            print(f"Falha permanente no valorAtualSteam ao buscar appid {appId}: {e}")
+            return {f"{appId}": {"data": {"name": "Erro"}}}
+
+def menorPreçoITDA(appid, ITRD_KEY):
+    try:
+        lookup_url = "https://api.isthereanydeal.com/games/lookup/v1"
+        r = requests.get(lookup_url, params={"key": ITRD_KEY, "appid": appid})
+        r.raise_for_status()
+        data = r.json()
+
+        gameId = data.get("game", {}).get("id")
+        if not gameId:
+            return None
+
+        lowPrice = f"https://api.isthereanydeal.com/games/storelow/v2?key={ITRD_KEY}&country=BR&shops=61"
+        response = requests.post(lowPrice, json=[gameId])
+        response.raise_for_status()
+        low = response.json()
+        if low and len(low) > 0:
+            lows = low[0].get("lows", [])
+            if lows:
+                return lows[0]["price"]["amount"]
+    except Exception as e:
+        print(f"Erro ITAD (AppID {appid}): {e}")
+        return None
+
+def valorRegular(appid):
+    valor = valorAtualSteam(appid)
+    steam_data = valor.get(str(appid))
+    
+    if not steam_data:
+        return None, None
+
+    if steam_data.get("success") is False:
+        return None, None
+
+    data_field = steam_data.get("data")
+
+    if not data_field or not isinstance(data_field, dict):
+        return None, None
+
+    priceInfo = data_field.get("price_overview")
+
+    if not priceInfo:
+        return None, None
+    
+    valorAtual = priceInfo["final"] / 100
+    desconto = priceInfo["discount_percent"]
+
+    return valorAtual, desconto

@@ -24,6 +24,8 @@ jobs:
           rm key.txt
 
       - name: Executar bot
+        env:
+          ITRD_KEY: ${{ secrets.ITRD_KEY }}
         run: |
           echo "Iniciando execução do SteamBot.py..."
           python SteamBot.py

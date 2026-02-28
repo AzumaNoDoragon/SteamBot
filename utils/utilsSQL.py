@@ -30,6 +30,13 @@ def criaTabelas():
             FOREIGN KEY (appid) REFERENCES jogos(appid) ON DELETE CASCADE
         );
                          
+        CREATE TABLE IF NOT EXISTS historico_preco(
+            appid TEXT PRIMARY KEY,
+            menor_preco REAL NOT NULL,
+            preco_regular REAL NOT NULL,
+            FOREIGN KEY (appid) REFERENCES jogos(appid) ON DELETE CASCADE
+        );
+
         CREATE INDEX IF NOT EXISTS idx_noticias_enviado_appid_data ON noticias(enviado, appid, data DESC);
         CREATE INDEX IF NOT EXISTS idx_jogos_username ON jogos(username);
         CREATE INDEX IF NOT EXISTS idx_noticias_appid_data ON noticias(appid, data DESC);

@@ -1,8 +1,9 @@
 print("Importanto bibliotecas...")
-import json
+import json, os
+from bs4 import BeautifulSoup
 from utils.utilsSQL import criaTabelas, jogoNaWishlist, removerJogoDaWishlist, conectar, selectNovasNoticias, buscaNomesErros, arrumaNomes, limparNoticiasAntigas
-from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo
-from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail
+from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo, menorPreçoITDA, valorRegular
+from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail, corpoDiscout
 from utils.utilsSteam import processarJogo
 from collections import defaultdict
 from datetime import datetime
@@ -51,8 +52,38 @@ processarJogo(593110, "Steam", "steam")
 conn = conectar()
 cursor = conn.cursor()
 email = []
+ITRD_KEY = os.getenv("ITRD_KEY")
+if not ITRD_KEY:
+    raise ValueError("ITRD_KEY não definida no ambiente")
 
 try:
+    for user in accounts:
+        count = 0
+        userNews = user.get("username")
+        appids = jogoNaWishlist(userNews, "wishlist")
+        email.append(f"""
+            <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
+                <h2 style="font-family:Arial; color: white; margin-top: 0;">Descontos de {userNews}</h2>
+        """)
+
+        for appid in appids:
+            menorValor = menorPreçoITDA(appid, ITRD_KEY)
+            valorAtual, desconto = valorRegular(appid)
+
+            if menorValor == None or valorAtual == None or desconto == None:
+                continue
+            print(userNews, appid, valorAtual, menorValor, desconto)
+            if menorValor == valorAtual and desconto == 0:
+                continue
+            elif valorAtual == menorValor and desconto != 0:
+                count += 1
+                print("append")
+                email.append(corpoDiscout(valorAtual, desconto, appid))
+        if count != 0:
+            email.append("</div>")
+        else:
+            email.pop()
+
     noticiasPorUsuario = defaultdict(lambda: {"steam": [], "biblioteca": [], "wishlist": []})
     novasNoticias = selectNovasNoticias("Steam")
     for noticia in novasNoticias:
@@ -108,8 +139,12 @@ try:
     if email:
         agora = datetime.now(ZoneInfo("America/Sao_Paulo"))
         emailFinal = htmlInicio(agora) + "\n".join(email) + htmlFinal()
+        soup = BeautifulSoup(emailFinal, "html.parser")
+        html_formatado = "\n".join(
+            linha for linha in emailFinal.splitlines() if linha.strip()
+        )
         with open("index.html", "w", encoding="utf-8") as arquivo:
-            arquivo.write(emailFinal)
+            arquivo.write(html_formatado)
 
         try:
             emailEnviado = enviaEmailGmail(emailBot, senha, emailDestino, emailFinal)
