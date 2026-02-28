@@ -1,5 +1,6 @@
 print("Importanto bibliotecas...")
 import json, os
+from bs4 import BeautifulSoup
 from utils.utilsSQL import criaTabelas, jogoNaWishlist, removerJogoDaWishlist, conectar, selectNovasNoticias, buscaNomesErros, arrumaNomes, limparNoticiasAntigas
 from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo, menorPreçoITDA, valorRegular
 from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail, corpoDiscout
