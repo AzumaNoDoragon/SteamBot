@@ -1,8 +1,8 @@
 print("Importanto bibliotecas...")
-import json
+import json, os
 from utils.utilsSQL import criaTabelas, jogoNaWishlist, removerJogoDaWishlist, conectar, selectNovasNoticias, buscaNomesErros, arrumaNomes, limparNoticiasAntigas
-from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo
-from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail
+from utils.utilsAPI import jogosWishlist, jogosBiblioteca, nomeJogo, menorPreçoITDA, valorRegular
+from utils.utilsEmail import corpoEmail, htmlInicio, htmlFinal, enviaEmailGmail, corpoDiscout
 from utils.utilsSteam import processarJogo
 from collections import defaultdict
 from datetime import datetime
@@ -51,8 +51,29 @@ processarJogo(593110, "Steam", "steam")
 conn = conectar()
 cursor = conn.cursor()
 email = []
+ITRD_KEY = os.getenv("ITRD_KEY")
+if not ITRD_KEY:
+    raise ValueError("ITRD_KEY não definida no ambiente")
 
 try:
+    for user in accounts:
+        userNews = user.get("username")
+        appids = jogoNaWishlist(userNews, "wishlist")
+        email.append(f"""
+            <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
+                <h2 style="font-family:Arial; color: white; margin-top: 0;">Notícias de {user}</h2>
+        """)
+
+        for appid in appids:
+            menorValor = menorPreçoITDA(appid, ITRD_KEY)
+            valorAtual = valorRegular(appid)
+
+            if menorValor == valorAtual:
+                print("Preço cheio!")
+            elif valorAtual == menorValor:
+                email.append(corpoDiscout(valorAtual, appid))
+        email.append("</div>")
+
     noticiasPorUsuario = defaultdict(lambda: {"steam": [], "biblioteca": [], "wishlist": []})
     novasNoticias = selectNovasNoticias("Steam")
     for noticia in novasNoticias:

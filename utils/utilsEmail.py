@@ -68,6 +68,21 @@ def corpoEmail(nome, title, data, content, url, appId):
         </div>
     """
 
+def corpoDiscout(valorAtual, appId):
+    '''Monta o corpo de email, se replicando para quantas noticias tem'''
+    imagem = imagemValida(appId)
+    return f"""
+        <div style="background-color: #fefefe; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div style="width: 120px; min-width: 100px; align-self: Right;">
+            <img src="{imagem}" alt="Imagem do jogo" style="width: 100%; border-radius: 6px;">
+            </div>
+            <div style="flex: 1; padding-left: 10px;">
+                <p style="margin: 5px 0; word-break: break-word;"><strong>Valor atual:</strong> {valorAtual}</p>
+                <p style="margin: 5px 0; word-break: break-word;"><strong>Menor valor historico, hora de comprar!</strong></p>
+            </div>
+        </div>
+    """
+
 def htmlInicio(agora):
     '''Inicio padrão para o corpo do email'''
     return f"""
