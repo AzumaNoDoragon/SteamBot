@@ -55,10 +55,10 @@ email = []
 ITRD_KEY = os.getenv("ITRD_KEY")
 if not ITRD_KEY:
     raise ValueError("ITRD_KEY não definida no ambiente")
-count = 0
 
 try:
     for user in accounts:
+        count = 0
         userNews = user.get("username")
         appids = jogoNaWishlist(userNews, "wishlist")
         email.append(f"""
