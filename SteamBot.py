@@ -61,7 +61,7 @@ try:
         appids = jogoNaWishlist(userNews, "wishlist")
         email.append(f"""
             <div style="background-color: #738496; margin-bottom: 30px; padding: 20px; border-radius: 12px;">
-                <h2 style="font-family:Arial; color: white; margin-top: 0;">Notícias de {user}</h2>
+                <h2 style="font-family:Arial; color: white; margin-top: 0;">Descontos de {userNews}</h2>
         """)
 
         for appid in appids:
