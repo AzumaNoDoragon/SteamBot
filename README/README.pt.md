@@ -7,12 +7,17 @@ A Steam mantém um histórico de notícias apenas para jogos jogados nos último
 
 - Busca automática dos jogos da biblioteca e wishlist de múltiplos usuários via API da Steam.
 - Consulta das notícias mais recentes de cada jogo.
+- Identificação e envio de descontos de jogos na wishlist quando o preço atual é o menor histórico localizado via API ITAD.
 - Armazenamento das notícias e jogos em banco SQLite, evitando duplicidade.
 - Geração de e-mail HTML personalizado para cada usuário, agrupando notícias por biblioteca e wishlist.
 - Envio automático de e-mails via Gmail.
 - Validação de imagens dos jogos para exibição nos cards.
 - Limpeza automática das notícias antigas, mantendo apenas as 10 mais recentes por jogo.
 - Correção automática de nomes de jogos que não foram buscados corretamente.
+
+## Diagrama de Atividades
+
+![alt text](../DiagramaAtividade/DiagramaAtividade.png)
 
 ## Requisitos
 
@@ -21,6 +26,7 @@ A Steam mantém um histórico de notícias apenas para jogos jogados nos último
 - Banco de dados SQLite (criado automaticamente)
 - Conta Gmail para envio dos e-mails (recomenda-se senha de app)
 - Chave de API da Steam
+- Chave de API do IsThereAnyDeal configurada na variável de ambiente `ITRD_KEY`
 - Arquivo de configuração `utils/secrets.json` com dados dos usuários e e-mail
 
 ## Como executar
@@ -40,6 +46,7 @@ A Steam mantém um histórico de notícias apenas para jogos jogados nos último
 
 > **Notas**
 > - O envio de e-mail utiliza SMTP do Gmail. Certifique-se de liberar acesso ou usar senha de app.
+> - Para trazer informações de desconto e menor preço histórico, é necessário definir a variável de ambiente `ITRD_KEY` com a chave da API IsThereAnyDeal.
 > - O banco de dados é criado automaticamente e armazena apenas as últimas 10 notícias de cada jogo.
 > - O sistema evita envio duplicado de notícias e corrige nomes de jogos com erro de busca.
 

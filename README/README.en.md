@@ -7,12 +7,17 @@ Steam keeps a news history only for games played in the last six months, which c
 
 - Automatic retrieval of games from the library and wishlist of multiple users via the Steam API.
 - Fetches the latest news for each game.
+- Identifies and sends discounts for wishlist games when the current price matches the lowest historical price found via the ITAD API.
 - Stores news and games in a SQLite database, avoiding duplicates.
 - Generates personalized HTML emails for each user, grouping news by library and wishlist.
 - Automatic email sending via Gmail.
 - Validates game images for display in cards.
 - Automatically cleans old news, keeping only the 10 most recent per game.
 - Automatically corrects game names that were not fetched correctly.
+
+## Activity diagram
+
+![alt text](../DiagramaAtividade/DiagramaAtividade.png)
 
 ## Requirements
 
@@ -21,6 +26,7 @@ Steam keeps a news history only for games played in the last six months, which c
 - SQLite database (created automatically)
 - Gmail account for sending emails (app password recommended)
 - Steam API key
+- IsThereAnyDeal API key set in the `ITRD_KEY` environment variable
 - Configuration file `utils/secrets.json` with user and email data
 
 ## How to run
@@ -40,6 +46,7 @@ Steam keeps a news history only for games played in the last six months, which c
 
 > **Notes**
 > - Email sending uses Gmail SMTP. Make sure to allow access or use an app password.
+> - To enable discount and historical low price information, set the `ITRD_KEY` environment variable with your IsThereAnyDeal API key.
 > - The database is created automatically and stores only the last 10 news items for each game.
 > - The system avoids sending duplicate news and corrects game names with fetch errors.
 

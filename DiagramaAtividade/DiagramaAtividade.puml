@@ -1,0 +1,28 @@
+@startuml DiagramaAtividade
+title Diagrama de Atividade do SteamBot
+
+start
+:Carregar secrets.json;
+:Inicializar DB com criaTabelas();
+:Para cada usuário;
+:Buscar wishlist;
+:Buscar biblioteca;
+:Processar cada jogo;
+if (Jogo removido da wishlist?) then (sim)
+  :Remover jogo do DB;
+endif
+:Selecionar novidades não enviadas;
+:Calcular descontos e gerar conteúdo de e-mail;
+if (Tem conteúdo para enviar?) then (sim)
+  :Construir HTML do e-mail;
+  :Enviar e-mail pelo Gmail;
+  if (Envio bem-sucedido?) then (sim)
+    :Commit no DB;
+  else
+    :Rollback no DB;
+  endif
+endif
+:Corrigir nomes com erro;
+:Limpar notícias antigas;
+stop
+@enduml
